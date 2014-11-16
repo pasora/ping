@@ -60,7 +60,7 @@ IP データグラムが通過できるルータの個数
 |:---|:---|:---|  
 |1|ICMP|Internet Control Message Protocol|  
 |2|IGMP|Internet Group Management Protocol|
-|4|IP|IP in IP(encapsulasion)|
+|4|IP|IP in IP(encapsulation)|
 |6|TCP|Transmission Control Protocol|
 |8|EGP|Exterior Gateway Protocol|
 |17|UDP|User Datagram Protocol|
@@ -83,7 +83,7 @@ IP ヘッダのチェックサム
 	};
 
 
-***  
+---  
 
 ### 6オクテットなど変数型に当てはまらないデータサイズ
 →配列で処理
@@ -104,7 +104,9 @@ IP ヘッダのチェックサム
 		//アドレス s1 と s2 の領域の先頭から n バイトを比較
 		//s1 が大きければ正の値を返す
 		//s2 が大きければ負の値を返す
-***
+
+---
+
 ### バイトオーダ変換  
 	#include <netinet/in.h>
 

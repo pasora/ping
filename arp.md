@@ -1,3 +1,6 @@
+## Adress Resolution Protocol
+Ethernet やトークンリングなどのブロードキャスト型データリンクで使用  
+IP アドレスを検索キーにして MAC アドレスを検索  
 ### ARP のパケットフォーマット
 	#define arp_hrd ea_hdr.ar_hrd
 		//ハードウェアアドレスフォーマット
