@@ -84,5 +84,77 @@ IP の機能を補助するプロトコル
 次のデータリンクの MTU の値が格納される  
 
 `icmp_data`  
-エラーを発生させた IP データグラムの IP ヘッダとそれに続く8バイトのデータが格納  
+エラーを発生させた IP データグラムの IP ヘッダとそれに続く8バイトのデータが格納される  
+## ICMP リダイレクトメッセージ
+IP データグラムを送信したホストのルーティングテーブルに非効率な点があったときに強制的に修正するために送信  
+
+### パケット構造体
+
+	struct icmp {
+		u_char icmp_type;	//type of message
+		u_char icmp_code;	//type sub code
+		u_short icmp_cksum;	//ones complement cksum of struct
+		struct in_addr icmp_gwaddr;
+		char icmp_data[1];
+	};
+
+`icmp_type`  
+5が格納される
+
+`icmp_code`  
+
+|`#define` されている文字|コード|意味|
+|---|---|---|
+|`ICMP_REDIRECT_NET`|0|ネットワークアドレスリダイレクト|
+|`ICMP_REDIRECT_HOST`|1|ホストアドレスリダイレクト|
+|`ICMP_REDIRECT_TOSNET`|2|そのネットワークと TOS に対するリダイレクト|
+|`ICMP_REDIRECT_TOSHOST`|3|ホストアドレスと TOS に対するリダイレクト|
+
+`icmp_cksum`  
+チェックサム  
+
+`icmp_gwaddr`  
+ルーティングテーブルの転送先に記述する IP アドレスが格納される  
+IP アドレスは`in_addr`構造体に格納される  
+
+`in_addr`構造体  
+
+	struct in_addr {
+		u_int32_t s_addr;
+	};
+
+`icmp_data`  
+リダイレクトが必要と考えられる IP データグラムの IP ヘッダとそれに続く8バイトのデータが格納される  
+
+## ICMP 時間超過メッセージ
+IP ヘッダの TTL が0になったとき、フラグメントされたパケットをリアセンブルできず廃棄した時に送信  
+
+### パケット構造体
+
+	struct icmp {
+		u_char icmp_type;	//type of message
+		u_char icmp_code;	//type sub code
+		u_short icmp_cksum;	//ones complement cksum of struct
+		n_int icmp_void;
+		char icmp_data[1];
+	};
+
+`icmp_type`  
+11が格納される  
+
+`icmp_code`  
+0 -> TTL が0になって IP データグラムが廃棄された  
+1 -> IP フラグメントのリアセンブルがタイムアウトしてデータグラムが廃棄された
+
+`icmp_cksum`  
+チェックサム  
+
+`icmp_void`  
+使用しない  
+
+`icmp_data`  
+エラーを発生させた IP データグラムの IP ヘッダとそれに続く8バイトのデータが格納される  
+
+## 共用体・実際の ICMP パケット構造体
+
 
