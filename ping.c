@@ -98,6 +98,7 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	*/
+
 	printf("%zd bytes from %s: icmp_seq=() ttl=() time=() ms\n", recv_bytes, argv[1]);
 
 	/* 
@@ -105,7 +106,6 @@ int main(int argc, char* argv[])
 	 */
 	close(sockd);
 	puts("### socket closed\n\n");
-
 
 	return 0;
 }
