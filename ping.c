@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
 	struct sockaddr_in resv_src;
 	int addr_len = 16;
 
-	recv_bytes = recvfrom(sockd, recv_data, sizeof(recv_data), 0, (struct sockaddr*)&resv_src, (socklen_t *)&addr_len);
+	recv_bytes = read(sockd, recv_data, sizeof(recv_data) /*, 0, (struct sockaddr*)&resv_src, (socklen_t *)&addr_len*/);
 	if (recv_bytes < 1) {
 		perror("### recvfrom:");
 		return -1;
