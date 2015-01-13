@@ -71,7 +71,7 @@ int ping4(struct addrinfo *res)
 		perror("socket");
 		return -1;
 	} else {
-		printf("###socket number is %d\n", sockd);
+		printf("### socket number is %d\n", sockd);
 	}
 
 	/*
@@ -92,6 +92,14 @@ int ping4(struct addrinfo *res)
 	ptr = &(((struct sockaddr_in *)res->ai_addr)->sin_addr);
 	inet_ntop(AF_INET, ptr, addr, sizeof(addr));
 	printf("### destination address is %s\n", addr);
+
+	struct sockaddr_in recvSockAddr;
+
+	memset(&recvSockAddr, 0, sizeof(recvSockAddr));
+	recvSockAddr.sin_port = htons(80);
+	recvSockAddr.sin_family = AF_INET;
+	recvSockAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	bind(sockd, (struct sockaddr_in *) &recvSockAddr, sizeof(recvSockAddr));
 
 	struct sockaddr_in to;
 	to.sin_len = sizeof(to);
