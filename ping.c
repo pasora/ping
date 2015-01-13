@@ -23,10 +23,54 @@
 #define IP6_HDRLEN 40
 #define ICMP_HDRLEN 8
 
-struct icmp6_message {
-	struct ip6_hdr ip6;
-	struct icmp6_hdr icmp6;
-};
+unsigned short checksumv4(unsigned short *data, int datasize);
+int ping4(struct addrinfo *res);
+uint16_t checksum (uint16_t *addr, int len);
+uint16_t checksumv6 (struct ip6_hdr iphdr, struct icmp6_hdr icmp6hdr);
+int ping6(struct addrinfo *res);
+
+int main(int argc, char *argv[])
+{
+	struct addrinfo hints, *res, *res0;
+	int error;
+	struct sockaddr_storage from;
+	socklen_t fromlen;
+	int ls;
+	int smax;
+	int sockmax;
+	fd_set rfd, rfd0;
+	int n;
+	int i;
+	char hbuf[NI_MAXHOST];
+
+	if (argc != 2) {
+		fprintf(stderr, "usage: ping [destination]\n");
+		exit(1);
+	}
+
+	memset(&hints, 0, sizeof(hints));
+	error = getaddrinfo(argv[1], NULL, &hints, &res0);
+	if (error) {
+		fprintf(stderr, "%s: %s\n", argv[1], gai_strerror(error));
+		exit(1);
+	}
+
+	smax = 0;
+	sockmax = -1;
+	for (res = res0; res; res = res->ai_next) {
+		if (res->ai_family == AF_INET6) {
+			puts("IPv6");
+			ping6(res);
+			return 0;
+		} else if (res->ai_family == AF_INET) {
+			puts("IPv4");
+			ping4(res);
+			return 0;
+		}
+	}
+	close(sockd);
+	return -1;
+}
 
 unsigned short checksumv4(unsigned short *data, int datasize)
 {
@@ -106,8 +150,7 @@ int ping4(struct addrinfo *res)
 	return 0;
 }
 
-uint16_t
-checksum (uint16_t *addr, int len)
+uint16_t checksum (uint16_t *addr, int len)
 {
   int nleft = len;
   int sum = 0;
@@ -130,8 +173,7 @@ checksum (uint16_t *addr, int len)
   return (answer);
 }
 
-uint16_t
-checksumv6 (struct ip6_hdr iphdr, struct icmp6_hdr icmp6hdr)
+uint16_t checksumv6 (struct ip6_hdr iphdr, struct icmp6_hdr icmp6hdr)
 {
   char buf[IP_MAXPACKET];
   char *ptr;
@@ -213,7 +255,7 @@ int ping6(struct addrinfo *res)
 	uint8_t *data, *ether_frame;
 	char recv_data[100];
 
-	strcpy (src_ip, "240f:7:70fe:1:22c9:d0ff:fe7b:78ad");
+	strcpy (src_ip, "(INPUT your IPv6 address)");
 
 	ipv6 = (struct sockaddr_in6 *)res->ai_addr;
 	ptr = &(ipv6->sin6_addr);
@@ -253,48 +295,3 @@ int ping6(struct addrinfo *res)
 	}
 	return 0;
 }
-
-int main(int argc, char *argv[])
-{
-	struct addrinfo hints, *res, *res0;
-	int error;
-	struct sockaddr_storage from;
-	socklen_t fromlen;
-	int ls;
-	int smax;
-	int sockmax;
-	fd_set rfd, rfd0;
-	int n;
-	int i;
-	char hbuf[NI_MAXHOST];
-
-	if (argc != 2) {
-		fprintf(stderr, "usage: ping [destination]\n");
-		exit(1);
-	}
-
-	memset(&hints, 0, sizeof(hints));
-	error = getaddrinfo(argv[1], NULL, &hints, &res0);
-	if (error) {
-		fprintf(stderr, "%s: %s\n", argv[1], gai_strerror(error));
-		exit(1);
-	}
-
-	smax = 0;
-	sockmax = -1;
-	for (res = res0; res; res = res->ai_next) {
-		if (res->ai_family == AF_INET6) {
-			puts("IPv6");
-			ping6(res);
-			return 0;
-		} else if (res->ai_family == AF_INET) {
-			puts("IPv4");
-			ping4(res);
-			return 0;
-		}
-	}
-	close(sockd);
-	return -1;
-}
-
-
