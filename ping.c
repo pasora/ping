@@ -1,7 +1,7 @@
 /*
  * ping.c
  *
- * usage: sudo ./ping [IP address(only)]
+ * usage: sudo ./ping destination
  *
  */
 
