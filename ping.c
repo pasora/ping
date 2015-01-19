@@ -150,29 +150,6 @@ int ping4(struct addrinfo *res)
 	return 0;
 }
 
-uint16_t checksum (uint16_t *addr, int len)
-{
-  int nleft = len;
-  int sum = 0;
-  uint16_t *w = addr;
-  uint16_t answer = 0;
-
-  while (nleft > 1) {
-    sum += *w++;
-    nleft -= sizeof (uint16_t);
-  }
-
-  if (nleft == 1) {
-    *(uint8_t *) (&answer) = *(uint8_t *) w;
-    sum += answer;
-  }
-
-  sum = (sum >> 16) + (sum & 0xFFFF);
-  sum += (sum >> 16);
-  answer = ~sum;
-  return (answer);
-}
-
 uint16_t checksumv6 (struct ip6_hdr iphdr, struct icmp6_hdr icmp6hdr)
 {
   char buf[IP_MAXPACKET];
